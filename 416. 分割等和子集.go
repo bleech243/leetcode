@@ -18,31 +18,30 @@ package leetcode
 
 func canPartition(nums []int) bool {
 	sum := 0
+	out := false
 	for i := 0; i < len(nums); i++ {
 		sum += nums[i]
 	}
-	if sum%2 != 0 {
+	if sum%2 == 1 {
 		return false
 	}
-	return isSumRight(nums, sum, sum/2)
+	target := sum / 2
+	partition(0, nums, target, &out)
+	return out
 }
 
-func isSumRight(nums []int, sum int, target int) bool {
-
-	if sum == target {
-		return true
+func partition(index int, nums []int, target int, out *bool) {
+	if *out == true {
+		return
 	}
-
-	if sum < target {
-		return false
+	if target < 0 {
+		return
 	}
-
-	if len(nums) == 1 {
-		if nums[0] == target {
-			return true
-		}
-		return false
+	if target == 0 {
+		*out = true
+		return
 	}
-
-	return isSumRight(nums[0:], sum, target) || isSumRight(nums[0:], sum-nums[0], target)
+	for i := index; i < len(nums); i++ {
+		partition(i+1, nums, target-nums[i], out)
+	}
 }
